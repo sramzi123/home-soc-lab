@@ -1,56 +1,197 @@
-# Home SOC Lab: Windows Event Logs + Sysmon in Splunk
+# 🛡️ Home SOC Lab - Splunk Cloud & Sysmon
 
-A self-built security monitoring lab simulating a small-scale SOC data pipeline: Windows endpoint telemetry (Event Logs + Sysmon) forwarded into Splunk, parsed into CIM-compliant fields, and ready for detection engineering.
+![Status](https://img.shields.io/badge/Status-In%20Progress-green)
+![Platform](https://img.shields.io/badge/Platform-Windows%2011-blue)
+![SIEM](https://img.shields.io/badge/SIEM-Splunk%20Cloud-orange)
 
 ## Overview
 
-This lab ingests native Windows Security/System/Application logs and Sysmon process, network, and file activity into Splunk, using the same architecture pattern (Universal Forwarder → Indexer, with Technology Add-ons for parsing) found in production SOC environments.
+This project documents the development of a Security Operations Center (SOC) home lab designed to emulate enterprise endpoint monitoring and detection workflows.
 
-**Goal:** build hands-on experience with the full data pipeline a SOC analyst works with daily, not just running Splunk searches, but understanding how data gets from an endpoint into a usable, field-extracted format.
+The lab currently collects Windows Event Logs and Sysmon telemetry from a Windows 11 endpoint using the Splunk Universal Forwarder and forwards the data to Splunk Cloud for centralized log analysis, threat hunting, and detection engineering.
 
-## Architecture
+The long-term goal is to expand this environment into a multi-host detection lab capable of simulating attacker behavior, building SPL detections, and documenting investigations aligned with the MITRE ATT&CK framework.
 
-```mermaid
-                     Internet
-                          │
-                          │
-                 Splunk Cloud Platform
-                          ▲
-                          │
-                HTTPS / TLS Forwarding
-                          │
-             Splunk Universal Forwarder
-                          ▲
-                          │
-         ┌────────────────┴──────────────┐
-         │                               │
-         │                               │
- Windows Event Logs                 Sysmon
-         │                               │
-         └──────────────┬────────────────┘
-                        │
-                        ▼
-               Windows 11 Endpoint
+---
 
-**Note:** the forwarder and indexer both run on the same physical host in this lab, rather than separate machines as in a typical production deployment. This surfaced a real config conflict: two independently-installed Sysmon add-ons (one on the forwarder, one on the indexer) both touching sourcetype normalization for the same data. See [`docs/troubleshooting.md`](docs/troubleshooting.md) for how that was diagnosed and fixed.
+## Objectives
 
-## What's in this repo
+- Deploy Splunk Cloud as a SIEM
+- Collect Windows Event Logs
+- Deploy Sysmon for endpoint telemetry
+- Develop SPL detection queries
+- Map detections to MITRE ATT&CK
+- Simulate attacker techniques
+- Build dashboards for security monitoring
+- Document detection engineering workflows
 
-| Path | Description |
-|---|---|
-| [`docs/setup.md`](docs/setup.md) | Full setup walkthrough: Sysmon, Universal Forwarder, TA installation, and configuration |
-| [`docs/troubleshooting.md`](docs/troubleshooting.md) | A real config conflict I diagnosed and fixed: two overlapping Sysmon TAs silently renaming sourcetypes at index time |
+---
 
-*(Detections, Atomic Red Team results, and dashboard screenshots to be added as the lab grows.)*
+# Current Architecture
 
-## Tech Stack
+(Add architecture diagram here)
 
-- Splunk Enterprise (local instance)
-- Splunk Universal Forwarder
-- Sysmon (SwiftOnSecurity configuration)
-- TA-microsoft-sysmon (forwarder-side input/sourcetype)
-- Splunk_TA_microsoft_sysmon (indexer-side CIM field extraction)
+---
 
-## Why this project
+## Current Environment
 
-Built as part of my hands-on preparation for SOC Analyst / Security Analyst roles, following CompTIA Security+ certification. The focus here is understanding log pipeline architecture, sourcetype mapping, and the kind of data plumbing issues that come up in real environments.
+| Component | Status |
+|------------|--------|
+| Windows 11 Endpoint | ✅ |
+| Splunk Cloud | ✅ |
+| Splunk Universal Forwarder | ✅ |
+| Windows Event Logs | ✅ |
+| Sysmon | ✅ |
+| Dashboards | 🚧 |
+| MITRE ATT&CK Detections | 🚧 |
+| Atomic Red Team | ⏳ |
+| Active Directory | ⏳ |
+
+---
+
+# Data Sources
+
+Currently ingesting:
+
+### Windows Event Logs
+
+- Security
+- System
+- Application
+
+### Sysmon
+
+- Event ID 1 – Process Creation
+- Event ID 3 – Network Connections
+- Event ID 11 – File Creation
+- Event ID 13 – Registry Modifications
+- Event ID 22 – DNS Queries
+
+---
+
+# Current Detections
+
+| Detection | Status |
+|------------|--------|
+| Process Creation | ✅ |
+| PowerShell Execution | 🚧 |
+| Failed Logon Detection | 🚧 |
+| Registry Modification | 🚧 |
+| DNS Monitoring | 🚧 |
+
+---
+
+# Repository Structure
+
+```text
+architecture/
+detections/
+spl/
+dashboards/
+screenshots/
+docs/
+attack-simulations/
+```
+
+---
+
+# Example SPL Searches
+
+Example searches are stored under
+
+```
+spl/
+```
+
+Examples include:
+
+- Process Creation
+- PowerShell Execution
+- Failed Logons
+- Registry Changes
+- DNS Queries
+
+---
+
+# MITRE ATT&CK Coverage
+
+| Technique | Detection |
+|------------|-----------|
+| T1059.001 | PowerShell |
+| T1112 | Registry Modification |
+| T1071.004 | DNS |
+| T1078 | Valid Accounts (planned) |
+
+---
+
+# Screenshots
+
+## Windows Event Logs
+
+(Add Screenshot)
+
+## Sysmon Process Creation
+
+(Add Screenshot)
+
+## Splunk Search Results
+
+(Add Screenshot)
+
+## Dashboard
+
+(Add Screenshot)
+
+---
+
+# Roadmap
+
+## Phase 1 ✅
+
+- Install Splunk Universal Forwarder
+- Connect to Splunk Cloud
+- Install Sysmon
+- Verify telemetry ingestion
+
+## Phase 2 🚧
+
+- Failed Logon Detection
+- PowerShell Detection
+- Registry Monitoring
+- Dashboard Development
+
+## Phase 3
+
+- Atomic Red Team
+- MITRE ATT&CK Detection Library
+- Detection Validation
+- Incident Reports
+
+## Phase 4
+
+- Active Directory
+- Multi-endpoint Monitoring
+- Attack Simulation
+- Threat Hunting
+
+---
+
+# Skills Demonstrated
+
+- Windows Administration
+- SIEM Deployment
+- Splunk SPL
+- Windows Event Logging
+- Sysmon
+- Detection Engineering
+- Threat Hunting
+- Log Analysis
+- MITRE ATT&CK
+
+---
+
+# References
+
+- Splunk Documentation
+- Sysinternals Sysmon
+- MITRE ATT&CK
